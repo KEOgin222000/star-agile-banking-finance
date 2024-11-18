@@ -1,12 +1,12 @@
 resource "aws_instance" "test-server" {
   ami = "ami-012967cc5a8c9f891"
   instance_type = "t2.micro"
-  key_name = "keogin aws key"
+  key_name = "keoginawskey"
   vpc_security_group_ids = ["sg-058a363c98e2db70b"]
   connection {
      type = "ssh"
      user = "ec2-user"
-     private_key = file("./keogin aws key.pem")
+     private_key = file("./keoginawskey.pem")
      host = self.public_ip
      }
   provisioner "remote-exec" {
