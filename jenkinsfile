@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        // Install the Maven version configured as "M3" and add it to the path.
+        // Install the Maven version configured as "M2_HOME" and add it to the path.
         maven "M2_HOME"
     }
 
@@ -14,43 +14,58 @@ pipeline {
 
                 // Run Maven on a Unix agent.
                 sh "mvn -Dmaven.test.failure.ignore=true clean package"
-
             }        
         }
-       stage('Generate Test Reports') {
-           steps {
-               publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/banking project/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
-                    }
-            }
-       stage('Create Docker Image') {
-           steps {
-               sh 'docker build -t keogin/banking-project-demo:3.0 .'
-                    }
-                }
-       stage('Docker-Login') {
-           steps {
-              withCredentials([usernamePassword(credentialsId: 'Docker-login', passwordVariable: 'dockerpassword', usernameVariable: 'dockerlogin')]) {
-               sh 'docker login -u ${dockerlogin} -p ${dockerpassword}'
-                        }
-                }
-       stage('Push-Image') {
-           steps {
-               sh 'docker push keogin/banking-project-demo:2.0'
-                     }
-                }
-       stage('Config & Deployment') {
+
+        stage('Generate Test Reports') {
             steps {
-                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS-ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]){
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/banking project/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+            }
+        }
+
+        stage('Create Docker Image') {
+            steps {
+                sh 'docker build -t keogin/banking-project-demo:3.0 .'
+            }
+        }
+
+        stage('Docker-Login') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'Docker-login', passwordVariable: 'dockerpassword', usernameVariable: 'dockerlogin')]) {
+                    sh 'docker login -u ${dockerlogin} -p ${dockerpassword}'
+                }
+            }
+        }
+
+        stage('Push-Image') {
+            steps {
+                sh 'docker push keogin/banking-project-demo:3.0' // Align the tag here to match the previous stage
+            }
+        }
+
+        stage('Config & Deployment') {
+            steps {
+                withCredentials([aws(accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'AWS-ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     dir('terraform-files') {
-                    sh 'sudo chmod 600 keoginawskey.pem'
-                    sh 'terraform init'
-                    sh 'terraform validate'
-                    sh 'terraform apply --auto-approve'
+                        sh 'sudo chmod 600 keoginawskey.pem'
+                        sh 'terraform init'
+                        sh 'terraform validate'
+                        sh 'terraform apply --auto-approve'
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'This will run after every build, regardless of success or failure.'
+        }
+        success {
+            echo 'Build succeeded!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+    }
 }
-    
-}
-}
-}
-}
-}
-}
+
