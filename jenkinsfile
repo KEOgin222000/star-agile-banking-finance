@@ -31,12 +31,11 @@ pipeline {
 
         stage('Docker-Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'Docker-login', passwordVariable: 'dockerpassword', usernameVariable: 'dockerlogin')]) {
+                withCredentials([usernamePassword(credentialsId: '4655444c-872b-4559-9cd2-9de00ba44eb1', passwordVariable: 'dockerpassword', usernameVariable: 'dockerlogin')]) {
                     sh 'docker login -u ${dockerlogin} -p ${dockerpassword}'
-                }
             }
         }
-
+       }
         stage('Push-Image') {
             steps {
                 sh 'docker push keogin222/banking-project-demo:3.0' // Align the tag here to match the previous stage
