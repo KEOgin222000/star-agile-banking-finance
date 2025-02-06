@@ -25,7 +25,7 @@ pipeline {
 
         stage('Create Docker Image') {
             steps {
-                sh 'docker build -t keogin/banking-project-demo:3.0 .'
+                sh 'docker build -t keogin222/banking-project-demo:3.0 .'
             }
         }
 
@@ -39,7 +39,7 @@ pipeline {
 
         stage('Push-Image') {
             steps {
-                sh 'docker push keogin/banking-project-demo:3.0' // Align the tag here to match the previous stage
+                sh 'docker push keogin222/banking-project-demo:3.0' // Align the tag here to match the previous stage
             }
         }
 
