@@ -10,6 +10,7 @@
     command : sudo yum install docker -y
 
   - name : Start Docker Service
+    command : sudo systemctl enable docker
     command : sudo systemctl start docker
 
   - name: Deploy Docker Container
