@@ -1,12 +1,12 @@
 resource "aws_instance" "test-server" {
-  ami = "ami-012967cc5a8c9f891"
+  ami = "085ad6ae776d8f09c"
   instance_type = "t2.micro"
-  key_name = "keoginawskey"
-  vpc_security_group_ids = ["sg-058a363c98e2db70b"]
+  key_name = "ban"
+  vpc_security_group_ids = ["sg-070ae16b0b96d53e5"]
   connection {
      type = "ssh"
      user = "ec2-user"
-     private_key = file("./keoginawskey.pem")
+     private_key = file("./ban.pem")
      host = self.public_ip
      }
   provisioner "remote-exec" {
