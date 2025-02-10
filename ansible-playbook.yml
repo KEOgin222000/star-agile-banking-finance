@@ -3,7 +3,7 @@
   become: true
   connection : ssh
   tasks : 
-  - name: updating apt
+  - name: updating yum
     command : sudo apt-get update
 
   - name : Install Docker
