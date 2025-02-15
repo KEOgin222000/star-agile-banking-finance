@@ -1,5 +1,5 @@
-resource "aws_instance" "test_server" {
-  ami = "085ad6ae776d8f09c"
+resource "aws_instance" {
+  ami = "053a45fff0a704a47"
   instance_type = "t2.micro"
   key_name = "ban.pem"
   vpc_security_group_ids = ["sg-070ae16b0b96d53e5"]
