@@ -1,7 +1,7 @@
 resource "aws_instance" "test_server" {
-  ami = "053a45fff0a704a47"
+  ami = "ami-053a45fff0a704a47"
   instance_type = "t2.micro"
-  key_name = "ban.pem"
+  key_name = "ban"
   vpc_security_group_ids = ["sg-070ae16b0b96d53e5"]
   connection {
      type = "ssh"
@@ -19,6 +19,6 @@ resource "aws_instance" "test_server" {
      command = "echo ${aws_instance.test_server.public_ip} > inventory"
      }
   provisioner "local-exec" {
-     command = "ansible-playbook /var/lib/jenkins/workspace/banking project/terraform-files/ansibleplaybook.yml"
+     command = "ansible-playbook /var/lib/jenkins/workspace/banking_project/terraform-files/ansibleplaybook.yml"
      }
   }
